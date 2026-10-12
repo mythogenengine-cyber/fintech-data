@@ -1,0 +1,17 @@
+year,roc_year,season,basis,report_type,capex,depreciation,capex_to_dep,prepaid_equip,note
+2024,113,3,quarter,合併,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2024,113,3,ttm,合併,,,,,capex:null_incomplete_ttm;dep:null_incomplete_ttm;null_missing_depreciation;null_missing_capex
+2024,113,4,quarter,合併,48869,84812,0.5762,,
+2024,113,4,ttm,合併,315322,343641,0.9176,,capex:r1_only;dep:r1_only
+2025,114,1,quarter,合併,41582,83933,0.4954,,
+2025,114,1,ttm,合併,,,,,capex:null_incomplete_ttm;dep:null_incomplete_ttm;null_missing_depreciation;null_missing_capex
+2025,114,2,quarter,合併,35392,84576,0.4185,,
+2025,114,2,ttm,合併,,,,,capex:null_incomplete_ttm;dep:null_incomplete_ttm;null_missing_depreciation;null_missing_capex
+2025,114,3,quarter,合併,37269,84931,0.4388,,
+2025,114,3,ttm,合併,163112,338252,0.4822,,
+2025,114,4,quarter,合併,96781,86337,1.1210,,
+2025,114,4,ttm,合併,211024,339777,0.6211,,
+2026,115,1,quarter,合併,55303,86875,0.6366,,
+2026,115,1,ttm,合併,224745,342719,0.6558,,
+2026,115,2,quarter,合併,35867,87895,0.4081,,
+2026,115,2,ttm,合併,225220,346038,0.6509,,
