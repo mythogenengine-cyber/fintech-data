@@ -1,8 +1,13 @@
 {
- "exported_at_taipei": "2026-10-19T16:10:15.120069+08:00",
- "source_commit": "15e4f522eec1dfdbb80b97599ecb2dd9caa5e80f",
- "tw_companies": 1087,
- "tw_rows": 412520,
+ "exported_at_taipei": "2026-10-29T09:06:10.378827+08:00",
+ "source_commit": "5e2f90a434f098f4c1662dbfe529e178642101a4",
+ "tw_companies": 1982,
+ "tw_rows": 741456,
  "us_tickers": 22,
- "us_rows": 2244
+ "us_rows": 2244,
+ "market_counts": {
+  "twse": 1088,
+  "tpex": 893,
+  "": 1
+ }
 }

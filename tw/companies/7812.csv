@@ -1,0 +1,13 @@
+year,roc_year,season,basis,report_type,capex,depreciation,capex_to_dep,prepaid_equip,note
+2023,112,4,quarter,個別,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2023,112,4,ttm,個別,13606,27099,0.5021,,capex:r1_only;dep:r1_only
+2024,113,2,quarter,個別,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2024,113,2,ttm,個別,,,,,capex:null_incomplete_ttm;dep:null_incomplete_ttm;null_missing_depreciation;null_missing_capex
+2024,113,4,quarter,個別,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2024,113,4,ttm,個別,20776,32979,0.6300,,capex:r1_only;dep:r1_only
+2025,114,2,quarter,個別,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2025,114,2,ttm,個別,23238,36861,0.6304,,capex:r1_only;dep:r1_only
+2025,114,4,quarter,個別,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2025,114,4,ttm,個別,22604,38625,0.5852,32822,capex:r1_only;dep:r1_only
+2026,115,2,quarter,個別,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2026,115,2,ttm,個別,55202,41625,1.3262,,capex:r1_only;dep:r1_only
