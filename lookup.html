@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FINTECH 查數頁</title>
+<style>
+:root {
+  --bg: #fbfaf7; --fg: #1f2328; --muted: #5f6670; --line: #dcd8cf; --card: #ffffff;
+  --accent: #1f5f8b; --accent-soft: #e4eef5; --warn: #9a5b00; --ref: #b0412e;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171a; --fg: #e6e4df; --muted: #9aa1a9; --line: #33373d; --card: #1d2024;
+    --accent: #7db4dc; --accent-soft: #1f2d38; --warn: #e0a64a; --ref: #e07a64;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg);
+  font-family: -apple-system, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  line-height: 1.6; font-size: 16px; }
+main { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+h2 { font-size: 1.15rem; margin: 32px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1.05rem; margin: 0 0 4px; }
+p { margin: 6px 0; }
+a { color: var(--accent); }
+.muted { color: var(--muted); font-size: 0.9rem; }
+.notice { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; margin: 12px 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin: 12px 0; }
+.search { display: flex; gap: 8px; flex-wrap: wrap; }
+.search input { flex: 1 1 220px; min-width: 0; font: inherit; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); }
+.search select { font: inherit; padding: 8px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--card); color: var(--fg); }
+.results { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip { font: inherit; font-size: 0.9rem; padding: 4px 10px; border: 1px solid var(--line);
+  border-radius: 999px; background: var(--card); color: var(--fg); cursor: pointer; text-decoration: none; }
+.chip:hover { border-color: var(--accent); }
+.summary { font-size: 1.05rem; margin: 8px 0; }
+.big { font-size: 1.6rem; font-weight: 600; }
+.chart { width: 100%; height: auto; display: block; margin: 8px 0; }
+.chart text { fill: var(--muted); font-size: 12px; }
+.tablewrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 500; }
+th:last-child { text-align: left; }
+td.note { text-align: left; color: var(--muted); font-size: 0.8rem; white-space: normal; min-width: 160px; }
+.flag { color: var(--warn); }
+ol, ul { padding-left: 1.4em; margin: 6px 0; }
+li { margin: 3px 0; }
+.stage { display: grid; grid-template-columns: 7.5em 1fr; gap: 4px 12px; }
+.stage .when { color: var(--muted); }
+.done { color: var(--accent); }
+footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>FINTECH 查數頁</h1>
+<p class="muted">試行版 · <span id="exported">讀取中…</span></p>
+
+<div class="notice">這是一個個人建設中的財報資料平台。目前只公開一個指標：<b>資本支出 ÷ 折舊</b>。比率高於 1，表示公司花在新設備上的錢多於舊設備的折舊；低於 1，表示投資少於折舊。這是結構訊號，<b>不是交易訊號</b>：在完成回測之前，它只供參考。</div>
+
+<h2>查一間公司</h2>
+<div class="search">
+  <input id="q" type="search" placeholder="輸入代號或名稱，例如 2330、南亞科、MU" autocomplete="off">
+  <select id="mkt">
+    <option value="all">全部</option>
+    <option value="twse">上市</option>
+    <option value="tpex">上櫃</option>
+    <option value="us">美股</option>
+  </select>
+</div>
+<div class="results" id="results"></div>
+
+<div id="view"></div>
+
+<h2>做了什麼、正在做什麼</h2>
+<div class="card">
+  <h3 class="done">已完成</h3>
+  <ul>
+    <li>台股上市、上櫃 <span id="cnt-tw">1,982</span> 間公司，2013 年起共 54 季財報，原始資料完整保存</li>
+    <li>資本支出 ÷ 折舊：台股單季及近四季；美股 <span id="cnt-us">22</span> 間觀察名單，年度，保留首次申報值與最新值</li>
+    <li>每日自動抓取新公布的財報，記錄第一次看到的日期（2026 年 9 月起）</li>
+  </ul>
+  <h3 style="margin-top:14px">正在做</h3>
+  <div class="stage">
+    <span class="when">2026 年 11 月</span><span>台股歷史股價（上市、上櫃，包括已下市公司）</span>
+    <span class="when">12 月至 1 月</span><span>除權息還原、估值、股價走勢與均線</span>
+    <span class="when">2027 年 2–3 月</span><span>第一次回測：資本支出 ÷ 折舊跌破或升穿 1 之後，股價的全體統計</span>
+  </div>
+  <h3 style="margin-top:14px">目前不做</h3>
+  <ul>
+    <li>港股（台美完成之後再評估）</li>
+    <li>買賣訊號、選股排行榜：未經回測，不提供</li>
+  </ul>
+  <p class="muted">進度更新於 2026-10-29。時間為估計，除權息還原與回測最難估算。</p>
+</div>
+
+<h2>請給我意見</h2>
+<div class="card">
+  <p>我不是金融出身，最需要知道的是：這個方向對看數據的人有沒有用。看完之後，請想想這幾條：</p>
+  <ol>
+    <li>你平常用什麼工具看台股或美股？</li>
+    <li>看完一間公司的資本支出 ÷ 折舊，你看得懂它在說什麼嗎？哪裡看不懂？</li>
+    <li>如果加上「過去比率跌破 1 之後 12 個月，股價通常怎樣走」（全體統計，不是個案），你會用它來做判斷嗎？</li>
+    <li>除了股價，你最想在這裡看到哪一項數據？</li>
+    <li>其他意見。</li>
+  </ol>
+  <p id="feedback"></p>
+</div>
+
+<footer>
+  <p>@Mythogen Engine · <a href="https://mythogenengine.com">mythogenengine.com</a></p>
+  <p>數據定義與已知限制：<a href="data.txt">data.txt</a> · 原始 CSV 清單：<a href="index.html">index.html</a></p>
+</footer>
+
+</main>
+<script>
+// Feedback form URL. Empty until the form exists.
+const FEEDBACK_URL = '';
+
+// Display labels for TWSE/TPEx industry codes. Display only.
+const IND = {
+  '01': '水泥', '02': '食品', '03': '塑膠', '04': '紡織纖維', '05': '電機機械', '06': '電器電纜',
+  '08': '玻璃陶瓷', '09': '造紙', '10': '鋼鐵', '11': '橡膠', '12': '汽車', '14': '建材營造',
+  '15': '航運', '16': '觀光餐旅', '17': '金融保險', '18': '貿易百貨', '19': '綜合', '20': '其他',
+  '21': '化學工業', '22': '生技醫療', '23': '油電燃氣', '24': '半導體', '25': '電腦及週邊設備',
+  '26': '光電', '27': '通信網路', '28': '電子零組件', '29': '電子通路', '30': '資訊服務',
+  '31': '其他電子', '32': '文化創意', '33': '農業科技', '35': '綠能環保', '36': '數位雲端',
+  '37': '運動休閒', '38': '居家生活'
+};
+const MKT = { twse: '上市', tpex: '上櫃', '': '市場未知' };
+const EXAMPLES = ['2330', '2408', '2344', 'us:MU', 'us:TSM'];
+
+let TW = [];
+let US = [];
+
+const $ = (s) => document.querySelector(s);
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', i = 0, q = false;
+  text = text.replace(/^﻿/, '');
+  while (i < text.length) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        q = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if (c === '"') { q = true; i++; continue; }
+    if (c === ',') { row.push(field); field = ''; i++; continue; }
+    if (c === '\r') { i++; continue; }
+    if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+    field += c; i++;
+  }
+  if (field !== '' || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+function toObjs(text) {
+  const r = parseCSV(text);
+  const h = r[0] || [];
+  return r.slice(1).filter((x) => !(x.length === 1 && x[0] === '')).map((x) => {
+    const o = {};
+    h.forEach((k, j) => { o[k] = x[j] === undefined ? '' : x[j]; });
+    return o;
+  });
+}
+async function getText(path) {
+  const res = await fetch(path, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(path + ' ' + res.status);
+  return res.text();
+}
+
+// Thousands separators on the original string; no float conversion.
+function fmt(s) {
+  if (s === undefined || s === null || s === '') return '—';
+  const m = /^(-?)(\d+)(\.\d+)?$/.exec(s);
+  if (!m) return esc(s);
+  return m[1] + m[2].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (m[3] || '');
+}
+function indLabel(code) {
+  if (!code) return '產業未知';
+  return IND[code] ? code + ' ' + IND[code] : code;
+}
+function vsOne(s) {
+  if (!s) return '';
+  const v = Number(s);
+  if (v > 1) return '高於 1，即投資多於折舊';
+  if (v < 1) return '低於 1，即投資少於折舊';
+  return '等於 1';
+}
+
+function drawChart(points, title) {
+  if (points.length < 2) return '<p class="muted">數據點不足，未能畫圖。</p>';
+  const W = Math.round(Math.min(800, Math.max(300, ($('#view').clientWidth || 640) - 34))), H = 230, L = 40, R = 12, T = 14, B = 30;
+  const vals = points.map((p) => p.v);
+  let ymax = Math.max(1.5, ...vals);
+  ymax = Math.ceil(ymax * 2) / 2;
+  const x = (i) => L + (W - L - R) * (points.length === 1 ? 0.5 : i / (points.length - 1));
+  const y = (v) => T + (H - T - B) * (1 - v / ymax);
+  let g = '';
+  const step = ymax <= 3 ? 0.5 : Math.ceil(ymax / 6);
+  for (let t = 0; t <= ymax + 1e-9; t += step) {
+    g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(t) + '" y2="' + y(t) + '" stroke="var(--line)" stroke-width="1"/>';
+    g += '<text x="' + (L - 6) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + (Math.round(t * 10) / 10) + '</text>';
+  }
+  g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(1) + '" y2="' + y(1) + '" stroke="var(--ref)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+  let lastLabel = '', lastX = -1e9;
+  points.forEach((p, i) => {
+    if (p.axis !== lastLabel && x(i) - lastX >= 40) {
+      g += '<text x="' + x(i) + '" y="' + (H - 10) + '" text-anchor="middle">' + esc(p.axis) + '</text>';
+      lastLabel = p.axis;
+      lastX = x(i);
+    }
+  });
+  const d = points.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.v).toFixed(1)).join(' ');
+  g += '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2"/>';
+  points.forEach((p, i) => {
+    g += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(p.v).toFixed(1) + '" r="2.5" fill="var(--accent)"><title>' +
+      esc(p.label + '：' + p.raw) + '</title></circle>';
+  });
+  return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(title) + '">' + g + '</svg>' +
+    '<p class="muted">紅色虛線為 1。實際數值見下表。</p>';
+}
+
+async function renderTW(id) {
+  const view = $('#view');
+  const c = TW.find((r) => r.company_id === id);
+  if (!c) { view.innerHTML = '<div class="card">找不到代號 ' + esc(id) + '。</div>'; return; }
+  view.innerHTML = '<div class="card">讀取中…</div>';
+  let rows;
+  try { rows = toObjs(await getText('tw/companies/' + encodeURIComponent(id) + '.csv')); }
+  catch (e) { view.innerHTML = '<div class="card">讀取失敗：' + esc(e.message) + '</div>'; return; }
+  const byP = new Map();
+  rows.forEach((r) => {
+    const k = r.roc_year.padStart(3, '0') + '-' + r.season;
+    if (!byP.has(k)) byP.set(k, { year: r.year, season: r.season });
+    byP.get(k)[r.basis] = r;
+  });
+  const keys = [...byP.keys()].sort();
+  const pts = [];
+  keys.forEach((k) => {
+    const p = byP.get(k);
+    if (p.ttm && p.ttm.capex_to_dep) {
+      pts.push({ v: Number(p.ttm.capex_to_dep), raw: p.ttm.capex_to_dep, label: p.year + ' Q' + p.season, axis: p.year });
+    }
+  });
+  const last = pts[pts.length - 1];
+  let html = '<div class="card">';
+  html += '<h3>' + esc(c.company_id) + ' ' + esc(c.name || '（未有名稱）') + '</h3>';
+  html += '<p class="muted">' + esc(MKT[c.market] || c.market) + ' · ' + esc(indLabel(c.industry)) + ' · 數據 ' +
+    esc(c.first_year) + '–' + esc(c.last_year) + ' · 單位：千元新台幣</p>';
+  if (last) {
+    html += '<p class="summary">最新近四季比率（' + esc(last.label) + '）<br><span class="big">' + esc(last.raw) +
+      '</span>　' + vsOne(last.raw) + '</p>';
+  } else {
+    html += '<p class="summary">未有可用的近四季比率。</p>';
+  }
+  html += drawChart(pts, '近四季資本支出 ÷ 折舊');
+  html += '<div class="tablewrap"><table><thead><tr><th>季度</th><th>單季資本支出</th><th>單季折舊</th>' +
+    '<th>單季比率</th><th>近四季比率</th><th>報表</th><th>備註</th></tr></thead><tbody>';
+  keys.slice().reverse().forEach((k) => {
+    const p = byP.get(k), q = p.quarter || {}, t = p.ttm || {};
+    const note = [q.note, t.note].filter(Boolean).join('；');
+    html += '<tr><td>' + esc(p.year) + ' Q' + esc(p.season) + '</td><td>' + fmt(q.capex) + '</td><td>' + fmt(q.depreciation) +
+      '</td><td>' + fmt(q.capex_to_dep) + '</td><td>' + fmt(t.capex_to_dep) + '</td><td>' + esc(q.report_type || t.report_type || '') +
+      '</td><td class="note">' + esc(note) + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  html += '<p class="muted">完整欄位（近四季資本支出、折舊、預付設備款）：<a href="tw/companies/' + esc(id) + '.csv">' +
+    esc(id) + '.csv</a>。「—」表示推導不出來，不是 0。</p>';
+  html += '</div>';
+  view.innerHTML = html;
+}
+
+async function renderUS(t) {
+  const view = $('#view');
+  if (!US.includes(t)) { view.innerHTML = '<div class="card">找不到美股代號 ' + esc(t) + '。</div>'; return; }
+  view.innerHTML = '<div class="card">讀取中…</div>';
+  let rows;
+  try { rows = toObjs(await getText('us/tickers/' + encodeURIComponent(t) + '.csv')); }
+  catch (e) { view.innerHTML = '<div class="card">讀取失敗：' + esc(e.message) + '</div>'; return; }
+  const byE = new Map();
+  rows.forEach((r) => {
+    if (!byE.has(r.period_end)) byE.set(r.period_end, { end: r.period_end, start: r.period_start });
+    const e = byE.get(r.period_end);
+    e[r.metric_name + ':' + r.version] = r;
+  });
+  const ends = [...byE.keys()].sort();
+  const pts = [];
+  let unit = '';
+  ends.forEach((k) => {
+    const e = byE.get(k), r = e['capex_to_dep:latest'];
+    if (e['capex:latest']) unit = e['capex:latest'].unit;
+    if (r && r.value) pts.push({ v: Number(r.value), raw: r.value, label: '財年結束 ' + k, axis: k.slice(0, 4) });
+  });
+  const last = pts[pts.length - 1];
+  let html = '<div class="card">';
+  html += '<h3>' + esc(t) + '</h3>';
+  html += '<p class="muted">美股 · 年度 · 單位：' + esc(unit || '原幣') + '（元）· 年份以財年結束日計，不是曆年</p>';
+  if (last) {
+    html += '<p class="summary">最新年度比率（' + esc(last.label) + '）<br><span class="big">' + esc(last.raw) +
+      '</span>　' + vsOne(last.raw) + '</p>';
+  } else {
+    html += '<p class="summary">未有可用的年度比率。</p>';
+  }
+  html += drawChart(pts, '年度資本支出 ÷ 折舊');
+  html += '<div class="tablewrap"><table><thead><tr><th>財年結束</th><th>資本支出</th><th>折舊</th><th>比率</th>' +
+    '<th>申報日</th><th>備註</th></tr></thead><tbody>';
+  ends.slice().reverse().forEach((k) => {
+    const e = byE.get(k);
+    const g = (m, v) => (e[m + ':' + v] ? e[m + ':' + v].value : '');
+    const revised = ['capex', 'depreciation', 'capex_to_dep'].filter((m) => e[m + ':first_filed'] && e[m + ':latest'] &&
+      g(m, 'first_filed') !== g(m, 'latest'));
+    const ratio = e['capex_to_dep:latest'] || {};
+    let note = [ratio.note, (e['capex:latest'] || {}).note, (e['depreciation:latest'] || {}).note].filter(Boolean).join('；');
+    if (revised.length) {
+      const first = revised.map((m) => ({ capex: '資本支出', depreciation: '折舊', capex_to_dep: '比率' }[m]) + ' 首次申報 ' + g(m, 'first_filed')).join('；');
+      note = (note ? note + '；' : '') + '曾修訂：' + first;
+    }
+    html += '<tr><td>' + esc(k) + '</td><td>' + fmt(g('capex', 'latest')) + '</td><td>' + fmt(g('depreciation', 'latest')) +
+      '</td><td>' + fmt(g('capex_to_dep', 'latest')) + (revised.length ? ' <span class="flag" title="曾修訂">*</span>' : '') +
+      '</td><td>' + esc(ratio.filed || '') + '</td><td class="note">' + esc(note) + '</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  html += '<p class="muted">表內為最新申報值；* 表示與首次申報值不同。完整數據：<a href="us/tickers/' + esc(t) + '.csv">' +
+    esc(t) + '.csv</a>。</p>';
+  html += '</div>';
+  view.innerHTML = html;
+}
+
+function search() {
+  const q = $('#q').value.trim().toLowerCase();
+  const m = $('#mkt').value;
+  const out = [];
+  if (q || m !== 'all') {
+    if (m !== 'us') {
+      for (const c of TW) {
+        if (m !== 'all' && c.market !== m) continue;
+        if (!q || c.company_id.startsWith(q) || (c.name || '').toLowerCase().includes(q)) {
+          out.push({ hash: 'tw/' + c.company_id, text: c.company_id + ' ' + (c.name || '') });
+        }
+        if (out.length >= 30) break;
+      }
+    }
+    if (m === 'all' || m === 'us') {
+      for (const t of US) {
+        if (out.length >= 30) break;
+        if (!q || t.toLowerCase().includes(q)) out.push({ hash: 'us/' + t, text: t + '（美股）' });
+      }
+    }
+  }
+  renderChips(out, q || m !== 'all' ? '沒有符合的公司。' : '');
+}
+function renderChips(list, emptyMsg) {
+  const el = $('#results');
+  if (!list.length) { el.innerHTML = emptyMsg ? '<span class="muted">' + esc(emptyMsg) + '</span>' : ''; return; }
+  el.innerHTML = list.map((x) => '<a class="chip" href="#' + esc(x.hash) + '">' + esc(x.text) + '</a>').join('');
+}
+function showExamples() {
+  const list = EXAMPLES.map((e) => {
+    if (e.startsWith('us:')) { const t = e.slice(3); return { hash: 'us/' + t, text: t + '（美股）' }; }
+    const c = TW.find((r) => r.company_id === e);
+    return { hash: 'tw/' + e, text: e + ' ' + (c ? c.name : '') };
+  });
+  $('#results').innerHTML = '<span class="muted">例子：</span>' +
+    list.map((x) => '<a class="chip" href="#' + esc(x.hash) + '">' + esc(x.text) + '</a>').join('');
+}
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h.startsWith('tw/')) renderTW(h.slice(3));
+  else if (h.startsWith('us/')) renderUS(h.slice(3));
+  else $('#view').innerHTML = '';
+}
+
+async function init() {
+  try {
+    const [meta, comp, wide] = await Promise.all([
+      getText('meta.json').then((t) => JSON.parse(t)),
+      getText('tw/companies.csv'),
+      getText('us/capex_to_dep_wide.csv')
+    ]);
+    TW = toObjs(comp);
+    US = toObjs(wide).map((r) => r.ticker).filter(Boolean).sort();
+    $('#exported').textContent = '數據匯出於 ' + String(meta.exported_at_taipei || '').slice(0, 16).replace('T', ' ') +
+      '（台北時間）';
+    $('#cnt-tw').textContent = TW.length.toLocaleString('en-US');
+    $('#cnt-us').textContent = String(US.length);
+  } catch (e) {
+    $('#exported').textContent = '讀取失敗';
+    $('#view').innerHTML = '<div class="card">讀取數據失敗：' + esc(e.message) +
+      '。如果是直接開啟本機檔案，請改用網頁伺服器開啟。</div>';
+    return;
+  }
+  $('#feedback').innerHTML = FEEDBACK_URL
+    ? '<a class="chip" href="' + esc(FEEDBACK_URL) + '" target="_blank" rel="noopener">填寫回饋表單</a>'
+    : '<span class="muted">回饋表單即將開放。</span>';
+  $('#q').addEventListener('input', () => { if ($('#q').value.trim() || $('#mkt').value !== 'all') search(); else showExamples(); });
+  $('#mkt').addEventListener('change', search);
+  window.addEventListener('hashchange', route);
+  showExamples();
+  route();
+}
+init();
+</script>
+</body>
+</html>
