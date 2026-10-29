@@ -63,7 +63,7 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
 <h1>FINTECH 查數頁</h1>
 <p class="muted">試行版 · <span id="exported">讀取中…</span></p>
 
-<div class="notice">這是一個個人建設中的財報資料平台。目前只公開一個指標：<b>資本支出 ÷ 折舊</b>。比率高於 1，表示公司花在新設備上的錢多於舊設備的折舊；低於 1，表示投資少於折舊。這是結構訊號，<b>不是交易訊號</b>：在完成回測之前，它只供參考。</div>
+<div class="notice">這是一個個人建設中的財報資料平台。目前只公開一個指標：<b>資本支出 ÷ 折舊</b>。比率高於 1，表示公司花在新設備上的錢多於舊設備的折舊；低於 1，表示投資少於折舊。這是結構訊號，<b>不是交易訊號</b>：在完成回測之前，它只供參考。看完之後，歡迎<a href="https://forms.gle/uHTZT4SP8QpyDVD99" target="_blank" rel="noopener">填寫意見表單</a>。</div>
 
 <h2>查一間公司</h2>
 <div class="search">
@@ -78,6 +78,17 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
 <div class="results" id="results"></div>
 
 <div id="view"></div>
+
+<h2>這個網站有什麼不同</h2>
+<div class="card">
+  <ul>
+    <li><b>計法公開</b>：每個數字的來源科目、單位與推導方法都寫在 <a href="data.txt">data.txt</a>，可以自己核對。</li>
+    <li><b>沒有 AI 生成的評語</b>：頁面上的文字只按固定規則顯示（例如比率是否高於 1），不由 AI 判斷。</li>
+    <li><b>可以直接交給 AI</b>：每間公司都有一個純文字 CSV 連結，可以直接貼給 ChatGPT、Claude 等工具分析。</li>
+    <li><b>保留第一次看到的數字</b>：原始資料每次抓取都保存，公司更正財報不會覆蓋舊版本。美股同時列出首次申報值與最新值；台股從 2026 年 9 月起記錄財報第一次公布的日期，更早的歷史數據是抓取當日的版本。</li>
+    <li><b>推導不出來就留空</b>：「—」表示資料不足，不會用 0 或估計值代替。</li>
+  </ul>
+</div>
 
 <h2>做了什麼、正在做什麼</h2>
 <div class="card">
@@ -103,14 +114,8 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
 
 <h2>請給我意見</h2>
 <div class="card">
-  <p>我不是金融出身，最需要知道的是：這個方向對看數據的人有沒有用。看完之後，請想想這幾條：</p>
-  <ol>
-    <li>你平常用什麼工具看台股或美股？</li>
-    <li>看完一間公司的資本支出 ÷ 折舊，你看得懂它在說什麼嗎？哪裡看不懂？</li>
-    <li>如果加上「過去比率跌破 1 之後 12 個月，股價通常怎樣走」（全體統計，不是個案），你會用它來做判斷嗎？</li>
-    <li>除了股價，你最想在這裡看到哪一項數據？</li>
-    <li>其他意見。</li>
-  </ol>
+  <p>我不是金融出身，最需要知道的是：這個方向對看數據的人有沒有用，包括你看不看得懂、會不會用，以及上面幾點對你重不重要。</p>
+  <p class="muted">表單約三至四分鐘，不需要登入，也不會收集電郵。回覆只有我看得到，結果只會以統計數字或匿名方式公開。</p>
   <p id="feedback"></p>
 </div>
 
@@ -121,8 +126,8 @@ footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line);
 
 </main>
 <script>
-// Feedback form URL. Empty until the form exists.
-const FEEDBACK_URL = '';
+// Feedback form URL.
+const FEEDBACK_URL = 'https://forms.gle/uHTZT4SP8QpyDVD99';
 
 // Display labels for TWSE/TPEx industry codes. Display only.
 const IND = {
