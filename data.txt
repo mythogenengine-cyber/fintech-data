@@ -1,5 +1,5 @@
 FINTECH 公開數據（capex ÷ 折舊）
-匯出時間：2026-10-29T09:06:10.378827+08:00
+匯出時間：2026-10-30T12:14:57.938098+08:00
 
 == 台股（MOPS）==
 - 單位：千元（新台幣）
@@ -18,9 +18,19 @@ FINTECH 公開數據（capex ÷ 折舊）
 - version：first_filed = 首次申報值；latest = 最新申報值
 - filed：該數值嘅申報日
 
+== 美股擴充指標（2026-10-30 起）==
+- ocf：營運現金流
+- fcf：ocf − capex（現金資本支出），同一版本相減
+- buyback：回購普通股付款；dividends：股息付款
+- lt_debt：長期債務（LongTermDebt，含一年內到期部分）；lt_debt_noncurrent：非流動部分
+- fin_lease_obtained：以融資租賃取得之資產；fin_lease_liability：融資租賃負債（結算日餘額）
+- capex_incl_fin_lease：capex + fin_lease_obtained
+- op_lease_obtained：以經營租賃取得之資產，另列，不加入資本支出
+- 冇標註即留空，不當 0；未開始租約只見於附註文字，未收錄
+
 == 已知限制 ==
 - 跨市場分母口徑不同：台股折舊含使用權資產折舊；美股 GAAP 經營租賃不列為折舊
-- 美股 capex 不含融資租賃取得之資產
+- 美股 capex 不含融資租賃取得之資產（計入後見 capex_incl_fin_lease）
 - 美股缺口：GOOGL 2021 年前、AAPL 2016 年無淨折舊標註；TSM 2025 年 companyfacts 未有數據；JPM 不適用
 - 台股 TSM 對照：2024 年 SEC 20-F 與 MOPS 2330 四季加總，capex 與折舊差額均少於 10 萬元
 
