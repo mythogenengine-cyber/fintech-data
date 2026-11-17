@@ -1,5 +1,5 @@
 FINTECH 公開數據（capex ÷ 折舊）
-匯出時間：2026-10-30T12:14:57.938098+08:00
+匯出時間：2026-11-17T18:00:30.936770+08:00
 
 == 台股（MOPS）==
 - 單位：千元（新台幣）
@@ -925,6 +925,7 @@ tw/companies/3714.csv
 tw/companies/3715.csv
 tw/companies/3716.csv
 tw/companies/3717.csv
+tw/companies/3718.csv
 tw/companies/4102.csv
 tw/companies/4104.csv
 tw/companies/4105.csv
@@ -1647,6 +1648,7 @@ tw/companies/6807.csv
 tw/companies/6811.csv
 tw/companies/6821.csv
 tw/companies/6823.csv
+tw/companies/6825.csv
 tw/companies/6829.csv
 tw/companies/6830.csv
 tw/companies/6831.csv
@@ -1708,6 +1710,7 @@ tw/companies/6933.csv
 tw/companies/6934.csv
 tw/companies/6936.csv
 tw/companies/6937.csv
+tw/companies/6938.csv
 tw/companies/6944.csv
 tw/companies/6945.csv
 tw/companies/6947.csv
@@ -1745,6 +1748,7 @@ tw/companies/7704.csv
 tw/companies/7705.csv
 tw/companies/7708.csv
 tw/companies/7709.csv
+tw/companies/7710.csv
 tw/companies/7711.csv
 tw/companies/7712.csv
 tw/companies/7713.csv
@@ -1778,6 +1782,7 @@ tw/companies/7768.csv
 tw/companies/7769.csv
 tw/companies/7770.csv
 tw/companies/7772.csv
+tw/companies/7777.csv
 tw/companies/7780.csv
 tw/companies/7782.csv
 tw/companies/7786.csv
@@ -1808,6 +1813,7 @@ tw/companies/7839.csv
 tw/companies/7842.csv
 tw/companies/7855.csv
 tw/companies/7856.csv
+tw/companies/7867.csv
 tw/companies/8011.csv
 tw/companies/8016.csv
 tw/companies/8021.csv

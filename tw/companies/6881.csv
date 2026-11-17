@@ -31,3 +31,5 @@ year,roc_year,season,basis,report_type,capex,depreciation,capex_to_dep,prepaid_e
 2026,115,1,ttm,個別,135861,10552,12.8754,,
 2026,115,2,quarter,個別,28042,3509,7.9915,,
 2026,115,2,ttm,個別,163680,11466,14.2752,,
+2026,115,3,quarter,個別,3904,3836,1.0177,,
+2026,115,3,ttm,個別,36736,12707,2.8910,,

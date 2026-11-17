@@ -47,3 +47,5 @@ year,roc_year,season,basis,report_type,capex,depreciation,capex_to_dep,prepaid_e
 2026,115,1,ttm,合併,19728,24445,0.8070,,
 2026,115,2,quarter,合併,1114,6207,0.1795,,
 2026,115,2,ttm,合併,7158,24897,0.2875,,
+2026,115,3,quarter,合併,229,6092,0.0376,,
+2026,115,3,ttm,合併,3457,24782,0.1395,,

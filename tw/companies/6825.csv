@@ -1,0 +1,3 @@
+year,roc_year,season,basis,report_type,capex,depreciation,capex_to_dep,prepaid_equip,note
+2026,115,3,quarter,合併,,,,,capex:null_empty_operand;dep:null_empty_operand;null_missing_depreciation;null_missing_capex
+2026,115,3,ttm,合併,,,,,capex:null_incomplete_ttm;dep:null_incomplete_ttm;null_missing_depreciation;null_missing_capex

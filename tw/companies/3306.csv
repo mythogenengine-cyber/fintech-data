@@ -107,3 +107,5 @@ year,roc_year,season,basis,report_type,capex,depreciation,capex_to_dep,prepaid_e
 2026,115,1,ttm,個別,,,,,capex:null_report_type_mismatch;dep:null_report_type_mismatch;null_missing_depreciation;null_missing_capex
 2026,115,2,quarter,個別,2124,4938,0.4301,,
 2026,115,2,ttm,個別,,,,,capex:null_report_type_mismatch;dep:null_report_type_mismatch;null_missing_depreciation;null_missing_capex
+2026,115,3,quarter,個別,1348,3433,0.3927,,
+2026,115,3,ttm,個別,,,,,capex:null_report_type_mismatch;dep:null_report_type_mismatch;null_missing_depreciation;null_missing_capex
