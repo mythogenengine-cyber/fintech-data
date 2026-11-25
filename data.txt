@@ -1,5 +1,5 @@
 FINTECH 公開數據（capex ÷ 折舊）
-匯出時間：2026-11-17T18:00:30.936770+08:00
+匯出時間：2026-11-25T09:23:31.200315+08:00
 
 == 台股（MOPS）==
 - 單位：千元（新台幣）
@@ -1811,6 +1811,7 @@ tw/companies/7828.csv
 tw/companies/7835.csv
 tw/companies/7839.csv
 tw/companies/7842.csv
+tw/companies/7848.csv
 tw/companies/7855.csv
 tw/companies/7856.csv
 tw/companies/7867.csv
